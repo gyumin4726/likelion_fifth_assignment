@@ -3,7 +3,33 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
+@login_required
+def user_profile(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+    return render(request, 'user_profile.html', {'profile': profile})
+
+@login_required
+def user_update(request):
+    user = request.user
+    profile = Profile.objects.get(user=user)
+
+    if request.method == "POST":
+        user.username = request.POST['username']
+        user.email = request.POST['email']
+        user.save()
+
+        profile.nickname = request.POST['nickname']
+        profile.image = request.FILES.get('profile_image')
+        profile.save()
+
+        messages.success(request, '프로필이 성공적으로 수정되었습니다.')
+        return redirect('home')
+    else:
+        return render(request, 'home.html', {'profile': profile})
 
 # 회원가입
 

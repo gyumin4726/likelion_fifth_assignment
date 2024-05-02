@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 
+from django.urls import path
+from . import views
+
 urlpatterns = [
     path('', views.home, name='home'), # 127.0.0.1:8000
     path('blog/<int:blog_id>/', views.detail, name='detail'),
@@ -10,5 +13,7 @@ urlpatterns = [
     path('blog/update/<int:blog_id>/', views.update, name='update'),
     path('blog/delete/<int:blog_id>/', views.delete, name='delete'),
     path('blog/create_comment/<int:blog_id>/', views.create_comment, name='create_comment'),
-    path('blog/new_comment/<int:blog_id>/', views.new_comment, name='new_comment')
+    path('blog/new_comment/<int:blog_id>/', views.new_comment, name='new_comment'),
+    path('blog/like/<int:blog_id>/', views.like_post, name='like_post'),
+    path('blog/unlike/<int:blog_id>/', views.unlike_post, name='unlike_post'),
 ]

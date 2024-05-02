@@ -1,7 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.core.paginator import Paginator
-from .models import Blog, Comment, Tag
+from .models import Blog, Comment, Tag, Like
 from .forms import BlogForm
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -75,3 +76,18 @@ def new_comment(request, blog_id):
     blog = get_object_or_404(Blog, pk=blog_id)
     return render(request, 'new_comment.html', {'blog':blog})
 
+@login_required
+def like_post(request, blog_id):
+    blog = get_object_or_404(Blog, pk=blog_id)
+    if request.user in blog.likes.all():
+        blog.likes.remove(request.user)
+    else:
+        blog.likes.add(request.user)
+    return redirect('detail', blog_id=blog_id)
+
+@login_required
+def unlike_post(request, blog_id):
+    blog = get_object_or_404(Blog, pk=blog_id)
+    if request.user in blog.likes.all():
+        blog.likes.remove(request.user)
+    return redirect('detail', blog_id=blog_id)

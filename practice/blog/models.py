@@ -9,7 +9,7 @@ class Blog(models.Model):
     image = models.ImageField(upload_to='blog/', null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     tag = models.ManyToManyField('Tag', blank=True)
-
+    likes = models.ManyToManyField(User, related_name='liked_blogs', blank=True)  # 좋아요를 나타내는 필드
 
     class Meta:
         db_table = 'blog'
@@ -43,3 +43,16 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name
+    
+# 좋아요
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'blog')  # 사용자와 블로그 게시물의 중복 좋아요 방지
+
+    def __str__(self):
+        return f'{self.user.username} likes {self.blog.title}'
